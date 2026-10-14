@@ -190,21 +190,10 @@ export default function App() {
         {/* 1. Thumbnails Section */}
         {(filterTab === 'all' || filterTab === 'thumbnails') && (
           <section id="thumbnails" className="scroll-mt-28">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
-              <div>
-                <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
-                  <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  {t.thumbnailsSection.title}
-                </h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  {t.thumbnailsSection.subtitle}
-                </p>
-              </div>
-
-              <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                {t.thumbnailsSection.badge}
-              </span>
-            </div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
+              <span className="w-8 h-1 bg-gold rounded-full"></span>
+              {t.thumbnailsSection.title}
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {THUMBNAILS_DATA.map((item) => (
@@ -221,21 +210,10 @@ export default function App() {
         {/* 2. Podcasts Section */}
         {(filterTab === 'all' || filterTab === 'podcasts') && (
           <section id="podcasts" className="scroll-mt-28">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
-              <div>
-                <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
-                  <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  {t.podcastsSection.title}
-                </h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  {t.podcastsSection.subtitle}
-                </p>
-              </div>
-
-              <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                {t.podcastsSection.badge}
-              </span>
-            </div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
+              <span className="w-8 h-1 bg-gold rounded-full"></span>
+              {t.podcastsSection.title}
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {PODCAST_VIDEOS.map((video) => (
@@ -248,21 +226,10 @@ export default function App() {
         {/* 3. Long Videos Section */}
         {(filterTab === 'all' || filterTab === 'long') && (
           <section id="long-videos" className="scroll-mt-28">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
-              <div>
-                <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
-                  <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  {t.longVideosSection.title}
-                </h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  {t.longVideosSection.subtitle}
-                </p>
-              </div>
-
-              <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                {t.longVideosSection.badge}
-              </span>
-            </div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
+              <span className="w-8 h-1 bg-gold rounded-full"></span>
+              {t.longVideosSection.title}
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {LONG_VIDEOS.map((video) => (
@@ -275,21 +242,10 @@ export default function App() {
         {/* 4. Reels & Shorts Section */}
         {(filterTab === 'all' || filterTab === 'reels') && (
           <section id="reels" className="scroll-mt-28">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
-              <div>
-                <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
-                  <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  {t.reelsSection.title}
-                </h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  {t.reelsSection.subtitle}
-                </p>
-              </div>
-
-              <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                {t.reelsSection.badge}
-              </span>
-            </div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
+              <span className="w-8 h-1 bg-gold rounded-full"></span>
+              {t.reelsSection.title}
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {REELS_VIDEOS.map((video) => (
