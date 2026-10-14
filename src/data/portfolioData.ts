@@ -196,45 +196,27 @@ export const REELS_VIDEOS: VideoItem[] = [
 
 export const SOFTWARE_TOOLS = [
   {
-    name: "Adobe Premiere Pro",
-    category: "المونتاج الأساسي",
-    desc: "التقطيع المتقدم، المزامنة المتعددة للكاميرات، وتنظيم المشاريع الضخمة.",
-    level: "خبير 98%",
+    name: "Adobe Premiere Pro (Pr Pro)",
+    category: "Video Editing",
+    categoryAr: "مونتاج الفيديو",
     icon: "film"
   },
   {
     name: "Adobe After Effects",
-    category: "الموشن جرافيك والمؤثرات",
-    desc: "صناعة التحريك السلس، المؤثرات البصرية VFX، والنصوص السينمائية.",
-    level: "محترف 92%",
+    category: "Motion Graphics & VFX",
+    categoryAr: "موشن جرافيك ومؤثرات",
     icon: "sparkles"
   },
   {
-    name: "Adobe Photoshop",
-    category: "تصميم الصور المصغرة",
-    desc: "معالجة الصور، التلاعب الرقمي، عزل العناصر، وتصميم أغلفة الـ CTR العالي.",
-    level: "خبير 96%",
-    icon: "image"
-  },
-  {
-    name: "DaVinci Resolve",
-    category: "التلوين السينمائي",
-    desc: "Color Grading دقيق، مطابقة ألوان الكاميرات، وضبط إضاءة البشرة.",
-    level: "متقدم 90%",
-    icon: "palette"
-  },
-  {
-    name: "Midjourney & AI Suite",
-    category: "توليد المواد البصرية",
-    desc: "توليد عناصر وخلفيات فريدة بالذكاء الاصطناعي لتغذية المونتاج والصور.",
-    level: "خبير 95%",
+    name: "Google Gemini (AI)",
+    category: "Generative AI",
+    categoryAr: "ذكاء اصطناعي توليدي",
     icon: "cpu"
   },
   {
-    name: "Sound Design & Clean-up",
-    category: "الهندسة الصوتية",
-    desc: "تنقية الضوضاء، موازنة الترددات، وتركيب مؤثرات Whooshes & Risers وBGM.",
-    level: "محترف 93%",
+    name: "Sound Design",
+    category: "SFX & Audio Engineering",
+    categoryAr: "هندسة ومؤثرات صوتية",
     icon: "headphones"
   }
 ];

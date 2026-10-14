@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film, Sparkles, Image, Palette, Cpu, Headphones, Check } from 'lucide-react';
+import { Film, Sparkles, Cpu, Headphones } from 'lucide-react';
 import { SOFTWARE_TOOLS } from '../data/portfolioData';
 import { Language, Translations } from '../data/translations';
 
@@ -9,63 +9,59 @@ interface ToolsSectionProps {
 }
 
 export const ToolsSection: React.FC<ToolsSectionProps> = ({ lang, t }) => {
+  const isAr = lang === 'ar';
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'film':
-        return <Film className="w-5 h-5 text-[#ffd700]" />;
+        return <Film className="w-6 h-6 text-[#ffd700]" />;
       case 'sparkles':
-        return <Sparkles className="w-5 h-5 text-[#ffd700]" />;
-      case 'image':
-        return <Image className="w-5 h-5 text-[#ffd700]" />;
-      case 'palette':
-        return <Palette className="w-5 h-5 text-[#ffd700]" />;
+        return <Sparkles className="w-6 h-6 text-[#ffd700]" />;
       case 'cpu':
-        return <Cpu className="w-5 h-5 text-[#ffd700]" />;
+        return <Cpu className="w-6 h-6 text-[#ffd700]" />;
       case 'headphones':
-        return <Headphones className="w-5 h-5 text-[#ffd700]" />;
+        return <Headphones className="w-6 h-6 text-[#ffd700]" />;
       default:
-        return <Sparkles className="w-5 h-5 text-[#ffd700]" />;
+        return <Sparkles className="w-6 h-6 text-[#ffd700]" />;
     }
   };
 
   return (
-    <section id="tools" className="w-full max-w-6xl mx-auto px-6 py-12 scroll-mt-24">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <h3 className="text-3xl md:text-4xl font-black text-white mb-3 flex items-center justify-center gap-3">
+    <section id="tools" className="w-full max-w-6xl mx-auto px-6 py-8 scroll-mt-28">
+      <div className="text-center max-w-2xl mx-auto mb-8">
+        <h3 className="text-2xl md:text-3xl font-black text-white mb-2 flex items-center justify-center gap-3">
           <span className="w-8 h-1 bg-gold rounded-full"></span>
           {t.title}
           <span className="w-8 h-1 bg-gold rounded-full"></span>
         </h3>
-        <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-          {t.subtitle}
+        <p className="text-gray-400 text-xs sm:text-sm">
+          {isAr 
+            ? 'أدوات المونتاج والمؤثرات والذكاء الاصطناعي لإنتاج محتوى استثنائي' 
+            : 'Core editing, visual effects, and AI toolset for production'}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* 4 Clean Minimal Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         {SOFTWARE_TOOLS.map((tool, idx) => (
           <div
             key={idx}
-            className="glass-panel p-5 rounded-2xl flex flex-col justify-between hover:border-[#ffd700]/50 transition-all duration-300 hover:scale-[1.02]"
+            className="glass-panel p-5 rounded-2xl flex flex-col items-center text-center hover:border-[#ffd700]/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-[#ffd700]/10 group"
           >
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-[#113824] border border-[#ffd700]/30 glow-gold-sm">
-                  {getIcon(tool.icon)}
-                </div>
-                <span className="text-xs font-bold text-gold px-2.5 py-1 rounded bg-[#ffd700]/10 border border-[#ffd700]/20 font-mono">
-                  {tool.level}
-                </span>
-              </div>
-
-              <h4 className="text-lg font-bold text-white mb-1">{tool.name}</h4>
-              <span className="text-xs text-[#ffd700]/80 font-medium block mb-2">{tool.category}</span>
-              <p className="text-gray-300 text-xs leading-relaxed">{tool.desc}</p>
+            {/* Tool Icon */}
+            <div className="w-14 h-14 rounded-2xl bg-[#113824] border border-[#ffd700]/30 flex items-center justify-center mb-3.5 glow-gold-sm group-hover:border-[#ffd700] transition-colors">
+              {getIcon(tool.icon)}
             </div>
 
-            <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-[11px] text-gray-400">
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{t.readyBadge}</span>
-            </div>
+            {/* Tool Name */}
+            <h4 className="text-base sm:text-lg font-black text-white mb-1.5 group-hover:text-[#ffd700] transition-colors">
+              {tool.name}
+            </h4>
+
+            {/* Short Category Label */}
+            <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/5 border border-white/10 text-gray-300">
+              {isAr ? tool.categoryAr : tool.category}
+            </span>
           </div>
         ))}
       </div>
