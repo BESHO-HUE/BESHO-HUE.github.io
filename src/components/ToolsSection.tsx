@@ -1,8 +1,14 @@
 import React from 'react';
 import { Film, Sparkles, Image, Palette, Cpu, Headphones, Check } from 'lucide-react';
 import { SOFTWARE_TOOLS } from '../data/portfolioData';
+import { Language, Translations } from '../data/translations';
 
-export const ToolsSection: React.FC = () => {
+interface ToolsSectionProps {
+  lang: Language;
+  t: Translations['toolsSection'];
+}
+
+export const ToolsSection: React.FC<ToolsSectionProps> = ({ lang, t }) => {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'film':
@@ -27,11 +33,11 @@ export const ToolsSection: React.FC = () => {
       <div className="text-center max-w-3xl mx-auto mb-12">
         <h3 className="text-3xl md:text-4xl font-black text-white mb-3 flex items-center justify-center gap-3">
           <span className="w-8 h-1 bg-gold rounded-full"></span>
-          البرامج والأدوات الاحترافية
+          {t.title}
           <span className="w-8 h-1 bg-gold rounded-full"></span>
         </h3>
         <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-          أستخدم أقوى برامج صناعة الفيديو وتقنيات الذكاء الاصطناعي التوليدي لضمان خروج كل ثانية بأعلى دقة ممكنة.
+          {t.subtitle}
         </p>
       </div>
 
@@ -46,7 +52,7 @@ export const ToolsSection: React.FC = () => {
                 <div className="p-3 rounded-xl bg-[#113824] border border-[#ffd700]/30 glow-gold-sm">
                   {getIcon(tool.icon)}
                 </div>
-                <span className="text-xs font-bold text-gold px-2.5 py-1 rounded bg-[#ffd700]/10 border border-[#ffd700]/20">
+                <span className="text-xs font-bold text-gold px-2.5 py-1 rounded bg-[#ffd700]/10 border border-[#ffd700]/20 font-mono">
                   {tool.level}
                 </span>
               </div>
@@ -58,7 +64,7 @@ export const ToolsSection: React.FC = () => {
 
             <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-[11px] text-gray-400">
               <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span>جاهز للاستخدام الفوري في المشاريع</span>
+              <span>{t.readyBadge}</span>
             </div>
           </div>
         ))}

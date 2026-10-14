@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { X, Sparkles, MessageCircle, Send, Check, Calculator, Clock, HelpCircle } from 'lucide-react';
+import { X, MessageCircle, Check, Calculator, Clock } from 'lucide-react';
 import { ProfileInfo } from '../data/portfolioData';
+import { Language, Translations } from '../data/translations';
 
 interface QuoteEstimatorProps {
   isOpen: boolean;
   onClose: () => void;
   profile: ProfileInfo;
+  lang: Language;
+  t: Translations['quoteModal'];
 }
 
-export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose, profile }) => {
+export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose, profile, lang, t }) => {
   const [projectType, setProjectType] = useState<'reels' | 'long' | 'podcast' | 'thumbnails' | 'bundle'>('reels');
   const [quantity, setQuantity] = useState<number>(3);
   const [urgency, setUrgency] = useState<'normal' | 'rush'>('normal');
@@ -18,7 +21,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
 
   if (!isOpen) return null;
 
-  const projectTypes = [
+  const projectTypesAr = [
     { id: 'reels', label: 'ريلز وشورتس (9:16)', desc: 'فيديوهات رأسية سريعة بنصوص متحركة وهندسة صوتية' },
     { id: 'long', label: 'فيديوهات طويلة يوتيوب', desc: 'سرد قصصي، تلوين، ومونتاج عالي الاحتفاظ' },
     { id: 'podcast', label: 'حلقات بودكاست', desc: 'تعدد كاميرات، تنقية صوت، وتقطيع فصول' },
@@ -26,36 +29,59 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
     { id: 'bundle', label: 'باقة شهرية شاملة', desc: 'إدارة كاملة للمحتوى المرئي لقناتك أو علامتك' },
   ];
 
+  const projectTypesEn = [
+    { id: 'reels', label: 'Reels & Shorts (9:16)', desc: 'Fast-paced vertical videos with animated captions & sound design' },
+    { id: 'long', label: 'YouTube Long-form Videos', desc: 'Documentary storytelling, pacing, and color grading' },
+    { id: 'podcast', label: 'Podcast Episodes', desc: 'Multicam editing, audio cleanup, and chaptering' },
+    { id: 'thumbnails', label: 'High-CTR Thumbnails', desc: 'Psychology-driven thumbnails with generative AI' },
+    { id: 'bundle', label: 'Monthly Retainer Bundle', desc: 'End-to-end post-production management for channels & brands' },
+  ];
+
+  const projectTypes = lang === 'ar' ? projectTypesAr : projectTypesEn;
+
   const getEstimatedTurnaround = () => {
-    if (urgency === 'rush') return '24 - 48 ساعة فقط (أولوية قصوى)';
-    if (projectType === 'thumbnails') return '24 - 48 ساعة';
-    if (projectType === 'reels') return '48 - 72 ساعة';
-    if (projectType === 'bundle') return 'تسليم أسبوعي مستمر';
-    return '3 - 5 أيام عمل';
+    if (lang === 'ar') {
+      if (urgency === 'rush') return '24 - 48 ساعة فقط (أولوية قصوى)';
+      if (projectType === 'thumbnails') return '24 - 48 ساعة';
+      if (projectType === 'reels') return '48 - 72 ساعة';
+      if (projectType === 'bundle') return 'تسليم أسبوعي مستمر';
+      return '3 - 5 أيام عمل';
+    } else {
+      if (urgency === 'rush') return '24 - 48 Hours Express (Top Priority)';
+      if (projectType === 'thumbnails') return '24 - 48 Hours';
+      if (projectType === 'reels') return '48 - 72 Hours';
+      if (projectType === 'bundle') return 'Weekly Continuous Delivery';
+      return '3 - 5 Business Days';
+    }
   };
 
   const generateWhatsAppMessage = () => {
     const selectedTypeObj = projectTypes.find((p) => p.id === projectType);
-    let msg = `السلام عليكم بيشوى، أرغب في الاستفسار عن عرض سعر لمشروع:\n`;
-    msg += `• نوع الخدمة: ${selectedTypeObj?.label}\n`;
-    msg += `• العدد / الكمية: ${quantity}\n`;
-    msg += `• سرعة التسليم: ${urgency === 'rush' ? 'مستعجل (24-48 ساعة)' : 'عادي'}\n`;
+    let msg = lang === 'ar'
+      ? `السلام عليكم بيشوى، أرغب في الاستفسار عن عرض سعر لمشروع:\n`
+      : `Hello Bishoy, I would like to inquire about a project quote:\n`;
+    
+    msg += `• ${lang === 'ar' ? 'نوع الخدمة' : 'Service'}: ${selectedTypeObj?.label}\n`;
+    msg += `• ${lang === 'ar' ? 'العدد' : 'Quantity'}: ${quantity}\n`;
+    msg += `• ${lang === 'ar' ? 'سرعة التسليم' : 'Turnaround'}: ${urgency === 'rush' ? (lang === 'ar' ? 'مستعجل (24-48 ساعة)' : 'Rush (24-48h)') : (lang === 'ar' ? 'عادي' : 'Standard')}\n`;
+    
     if (projectType !== 'thumbnails') {
-      msg += `• نصوص كابشنز ديناميكية: ${includeCaptions ? 'نعم مطلوب' : 'غير مطلوب'}\n`;
-      msg += `• تصميم صورة مصغرة (Thumbnail): ${includeThumbnail ? 'نعم مطلوب' : 'غير مطلوب'}\n`;
+      msg += `• ${lang === 'ar' ? 'كابشنز متحركة' : 'Animated Captions'}: ${includeCaptions ? (lang === 'ar' ? 'نعم مطلوب' : 'Yes') : (lang === 'ar' ? 'لا' : 'No')}\n`;
+      msg += `• ${lang === 'ar' ? 'غلاف مصغر' : 'Thumbnail'}: ${includeThumbnail ? (lang === 'ar' ? 'نعم مطلوب' : 'Yes') : (lang === 'ar' ? 'لا' : 'No')}\n`;
     }
     if (clientNotes.trim()) {
-      msg += `• تفاصيل إضافية: ${clientNotes.trim()}\n`;
+      msg += `• ${lang === 'ar' ? 'ملاحظات' : 'Notes'}: ${clientNotes.trim()}\n`;
     }
     return encodeURIComponent(msg);
   };
 
-  const whatsappLink = `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}?text=${generateWhatsAppMessage()}`;
+  const cleanPhone = profile.whatsapp.replace(/[^0-9]/g, '');
+  const whatsappLink = `https://wa.me/${cleanPhone}?text=${generateWhatsAppMessage()}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div 
-        className="relative w-full max-w-2xl bg-[#07160e] border border-[#ffd700]/30 rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col"
+        className="relative w-full max-w-2xl bg-[#07160e] border border-[#ffd700]/30 rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col text-start"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -65,8 +91,8 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
               <Calculator className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-white text-lg">طلب عرض سعر وتفاصيل مشروعك</h3>
-              <p className="text-xs text-gray-300">حدد نوع وحجم مشروعك واحصل على استشارة وتنسيق مباشر</p>
+              <h3 className="font-extrabold text-white text-lg">{t.title}</h3>
+              <p className="text-xs text-gray-300">{t.subtitle}</p>
             </div>
           </div>
 
@@ -79,30 +105,30 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
         </div>
 
         {/* Form Body */}
-        <div className="p-6 overflow-y-auto space-y-6 text-right">
+        <div className="p-6 overflow-y-auto space-y-6">
           
           {/* Project Type */}
           <div>
             <label className="block text-sm font-bold text-white mb-3">
-              1. اختر نوع المشروع المطلوب:
+              {t.step1}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {projectTypes.map((t) => (
+              {projectTypes.map((tItem) => (
                 <button
-                  key={t.id}
+                  key={tItem.id}
                   type="button"
-                  onClick={() => setProjectType(t.id as any)}
-                  className={`p-3 rounded-xl text-right transition-all border ${
-                    projectType === t.id
+                  onClick={() => setProjectType(tItem.id as any)}
+                  className={`p-3 rounded-xl text-start transition-all border ${
+                    projectType === tItem.id
                       ? 'bg-[#113824] border-[#ffd700] text-[#ffd700] glow-gold-sm'
                       : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-sm">{t.label}</span>
-                    {projectType === t.id && <Check className="w-4 h-4 text-[#ffd700]" />}
+                    <span className="font-bold text-sm">{tItem.label}</span>
+                    {projectType === tItem.id && <Check className="w-4 h-4 text-[#ffd700]" />}
                   </div>
-                  <span className="text-[11px] text-gray-400 block leading-tight">{t.desc}</span>
+                  <span className="text-[11px] text-gray-400 block leading-tight">{tItem.desc}</span>
                 </button>
               ))}
             </div>
@@ -112,10 +138,10 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-bold text-white">
-                2. العدد التقريبي (فيديوهات / صور مصغرة):
+                {t.step2}
               </label>
-              <span className="text-gold font-bold text-base px-3 py-0.5 rounded bg-[#ffd700]/10 border border-[#ffd700]/20">
-                {quantity} {projectType === 'thumbnails' ? 'صور' : 'فيديوهات'}
+              <span className="text-gold font-bold text-base px-3 py-0.5 rounded bg-[#ffd700]/10 border border-[#ffd700]/20 font-mono">
+                {quantity} {projectType === 'thumbnails' ? (lang === 'ar' ? 'صور' : 'Thumbnails') : (lang === 'ar' ? 'فيديوهات' : 'Videos')}
               </span>
             </div>
             <input
@@ -126,7 +152,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
               onChange={(e) => setQuantity(Number(e.target.value))}
               className="w-full accent-[#ffd700] cursor-pointer"
             />
-            <div className="flex justify-between text-[11px] text-gray-400 mt-1">
+            <div className="flex justify-between text-[11px] text-gray-400 mt-1 font-mono">
               <span>1</span>
               <span>5</span>
               <span>10</span>
@@ -138,7 +164,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
           {/* Delivery Urgency */}
           <div>
             <label className="block text-sm font-bold text-white mb-2">
-              3. أولوية وسرعة التسليم:
+              {t.step3}
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -150,8 +176,8 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
                     : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
                 }`}
               >
-                <span>تسليم قياسي منتظم</span>
-                <span className="block text-[11px] text-gray-400 font-normal mt-0.5">وفق الجدول المعتاد</span>
+                <span>{t.standardDelivery}</span>
+                <span className="block text-[11px] text-gray-400 font-normal mt-0.5">{t.standardDesc}</span>
               </button>
 
               <button
@@ -163,8 +189,8 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
                     : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/20'
                 }`}
               >
-                <span>مستعجل ⚡ Express</span>
-                <span className="block text-[11px] text-gray-400 font-normal mt-0.5">أولوية إنتاج 24-48h</span>
+                <span>{t.rushDelivery}</span>
+                <span className="block text-[11px] text-gray-400 font-normal mt-0.5">{t.rushDesc}</span>
               </button>
             </div>
           </div>
@@ -172,7 +198,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
           {/* Additional Options */}
           {projectType !== 'thumbnails' && (
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-2">
-              <span className="block text-xs font-bold text-gray-300 mb-1">إضافات مقترحة:</span>
+              <span className="block text-xs font-bold text-gray-300 mb-1">{t.extrasTitle}</span>
               <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-200">
                 <input
                   type="checkbox"
@@ -180,7 +206,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
                   onChange={(e) => setIncludeCaptions(e.target.checked)}
                   className="rounded text-[#ffd700] accent-[#ffd700] w-4 h-4"
                 />
-                <span>إضافة نصوص كابشنز متحركة وتفريغ صوتي ديناميكي (Dynamic Captions)</span>
+                <span>{t.captionsOption}</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-200">
@@ -190,7 +216,7 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
                   onChange={(e) => setIncludeThumbnail(e.target.checked)}
                   className="rounded text-[#ffd700] accent-[#ffd700] w-4 h-4"
                 />
-                <span>تصميم صورة مصغرة (CTR Thumbnail) عالية الدقة مع كل فيديو</span>
+                <span>{t.thumbnailsOption}</span>
               </label>
             </div>
           )}
@@ -198,13 +224,13 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
           {/* Notes */}
           <div>
             <label className="block text-sm font-bold text-white mb-2">
-              4. ملاحظات أو روابط لمحتوى مشابه (اختياري):
+              {t.step4}
             </label>
             <textarea
               rows={2}
               value={clientNotes}
               onChange={(e) => setClientNotes(e.target.value)}
-              placeholder="مثال: قناة تقنية، أسلوب مشابه لـ أليكس هورموزي، أو رابط فيديو مرجعي..."
+              placeholder={t.notesPlaceholder}
               className="w-full bg-[#0b1f15] border border-white/15 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#ffd700]"
             />
           </div>
@@ -214,12 +240,12 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-[#ffd700]" />
               <div>
-                <span className="text-xs text-gray-300 block">وقت التسليم المتوقع:</span>
+                <span className="text-xs text-gray-300 block">{t.turnaroundLabel}</span>
                 <span className="text-sm font-bold text-[#ffd700]">{getEstimatedTurnaround()}</span>
               </div>
             </div>
             <span className="text-xs text-emerald-300 font-semibold bg-emerald-900/60 px-2.5 py-1 rounded">
-              استشارة مجانية
+              {t.freeConsultation}
             </span>
           </div>
 
@@ -229,19 +255,19 @@ export const QuoteEstimator: React.FC<QuoteEstimatorProps> = ({ isOpen, onClose,
         <div className="p-4 border-t border-[#ffd700]/20 bg-[#0b1f15] flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white glass-panel rounded-xl"
+            className="px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white glass-panel rounded-xl cursor-pointer"
           >
-            إلغاء
+            {t.cancel}
           </button>
 
           <a
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-2.5 text-sm font-bold bg-[#ffd700] text-[#07160e] hover:bg-[#ffe234] rounded-xl flex items-center gap-2 shadow-lg shadow-[#ffd700]/20"
+            className="px-6 py-2.5 text-sm font-bold bg-[#ffd700] text-[#07160e] hover:bg-[#ffe234] rounded-xl flex items-center gap-2 shadow-lg shadow-[#ffd700]/20 cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>إرسال الطلب مباشرة عبر واتساب</span>
+            <span>{t.sendWhatsApp}</span>
           </a>
         </div>
 

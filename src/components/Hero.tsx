@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Sparkles, MessageCircle, ArrowDown, Eye, CheckCircle2, Film, Clock, Flame, Camera, Phone } from 'lucide-react';
 import { ProfileInfo } from '../data/portfolioData';
+import { Language, Translations } from '../data/translations';
 
 interface HeroProps {
   profile: ProfileInfo;
@@ -8,6 +9,8 @@ interface HeroProps {
   onOpenQuote: () => void;
   onContactClick: () => void;
   onUpdateAvatar?: (avatarBase64: string) => void;
+  lang: Language;
+  t: Translations['hero'];
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -16,12 +19,16 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenQuote,
   onContactClick,
   onUpdateAvatar,
+  lang,
+  t,
 }) => {
-  const [imageError, setImageError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const cleanPhone = profile.whatsapp.replace(/[^0-9]/g, '');
-  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('السلام عليكم بيشوى، أريد الاستفسار عن مشروع مونتاج وتصميم...')}`;
+  const whatsappMessage = lang === 'ar'
+    ? 'السلام عليكم بيشوى، أريد الاستفسار عن مشروع مونتاج وتصميم...'
+    : 'Hello Bishoy, I would like to inquire about a video editing / thumbnail project...';
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
   // Fallback to locally bundled file or Unsplash
   const localAvatar = "./bishoy-profile.jpg";
@@ -57,6 +64,9 @@ export const Hero: React.FC<HeroProps> = ({
     }
   };
 
+  const displayName = lang === 'ar' ? profile.name : profile.nameEn;
+  const displayBio = lang === 'ar' ? profile.bio : t.bio;
+
   return (
     <header className="relative w-full max-w-5xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-20 flex flex-col items-center text-center">
       
@@ -66,7 +76,7 @@ export const Hero: React.FC<HeroProps> = ({
       {/* Availability Status Badge */}
       <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#113824]/60 border border-[#ffd700]/30 backdrop-blur-md">
         <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-        <span className="text-xs font-semibold text-[#ffd700]">متاح لاستقبال مشاريع المونتاج والتصميم الآن</span>
+        <span className="text-xs font-semibold text-[#ffd700]">{t.badge}</span>
       </div>
 
       {/* Avatar Container with Pulsing Gold Glow & Image Upload Button */}
@@ -75,7 +85,7 @@ export const Hero: React.FC<HeroProps> = ({
         <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full border-4 border-[#ffd700] overflow-hidden bg-[#07160e] z-10 shadow-2xl transition-transform duration-300 group-hover:scale-105">
           <img
             src={avatarSrc}
-            alt={profile.name}
+            alt={displayName}
             onError={handleImageError}
             className="w-full h-full object-cover"
           />
@@ -85,10 +95,10 @@ export const Hero: React.FC<HeroProps> = ({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer z-30"
-            title="انقر لتحديث أو رفع صورتك"
+            title={t.changePhotoBtn}
           >
             <Camera className="w-7 h-7 text-[#ffd700] mb-1" />
-            <span className="text-[11px] font-bold text-gray-200">تغيير الصورة</span>
+            <span className="text-[11px] font-bold text-gray-200">{lang === 'ar' ? 'تغيير الصورة' : 'Change Photo'}</span>
           </button>
         </div>
 
@@ -97,8 +107,8 @@ export const Hero: React.FC<HeroProps> = ({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           className="absolute -bottom-1 -right-1 z-20 bg-[#ffd700] hover:bg-[#ffe234] text-[#07160e] p-2.5 rounded-full shadow-lg border-2 border-[#07160e] cursor-pointer transition-transform hover:scale-110 active:scale-95"
-          title="انقر لتغيير صورتك الشخصية"
-          aria-label="تغيير الصورة الشخصية"
+          title={t.changePhotoBtn}
+          aria-label={t.changePhotoBtn}
         >
           <Camera className="w-4 h-4 md:w-5 md:h-5" />
         </button>
@@ -121,22 +131,22 @@ export const Hero: React.FC<HeroProps> = ({
           className="mb-6 px-4 py-1.5 rounded-full bg-[#113824] hover:bg-[#184a30] border border-[#ffd700]/30 text-xs font-bold text-[#ffd700] hover:text-white flex items-center gap-1.5 cursor-pointer transition-all shadow-sm hover:shadow-[#ffd700]/15"
         >
           <Camera className="w-3.5 h-3.5" />
-          <span>تغيير أو اختيار صورتك الشخصية 📷</span>
+          <span>{t.changePhotoBtn}</span>
         </button>
       )}
 
       {/* Name and Titles */}
       <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-3 tracking-tight">
-        <span className="text-white">{profile.name}</span>
+        <span className="text-white">{displayName}</span>
       </h1>
       
       <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gold mb-3 tracking-wide flex items-center justify-center gap-2">
-        <span>Video Editor & AI Graphic Designer</span>
+        <span>{t.title}</span>
       </h2>
 
       {/* Direct Phone / WhatsApp quick bar */}
       <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-[#0b1f15] border border-[#ffd700]/30 shadow-md">
-        <span className="text-xs text-gray-300">الواتساب المباشر:</span>
+        <span className="text-xs text-gray-300">{t.phoneLabel}</span>
         <a
           href={whatsappUrl}
           target="_blank"
@@ -151,7 +161,7 @@ export const Hero: React.FC<HeroProps> = ({
 
       {/* Bio text */}
       <p className="text-gray-300 max-w-2xl text-base md:text-lg leading-relaxed mb-8 font-normal">
-        {profile.bio}
+        {displayBio}
       </p>
 
       {/* Primary Action Buttons */}
@@ -163,7 +173,7 @@ export const Hero: React.FC<HeroProps> = ({
           className="bg-gold text-[#0b1f15] hover:bg-[#ffe234] font-extrabold py-3.5 px-8 rounded-xl transition-all shadow-lg hover:shadow-[#ffd700]/30 hover:scale-105 flex items-center gap-2 text-base cursor-pointer"
         >
           <MessageCircle className="w-5 h-5" />
-          <span>تواصل عبر واتساب (01201699362)</span>
+          <span>{t.directWhatsApp} (01201699362)</span>
         </a>
 
         <button
@@ -171,14 +181,14 @@ export const Hero: React.FC<HeroProps> = ({
           className="glass-panel text-white hover:text-[#ffd700] hover:border-[#ffd700] font-bold py-3.5 px-7 rounded-xl transition-all flex items-center gap-2 text-base cursor-pointer"
         >
           <Sparkles className="w-5 h-5 text-[#ffd700]" />
-          <span>طلب عرض سعر لمشروعك</span>
+          <span>{t.quoteBtn}</span>
         </button>
 
         <button
           onClick={onExploreClick}
           className="text-gray-300 hover:text-white font-medium py-3.5 px-5 rounded-xl transition-all flex items-center gap-1.5 text-sm cursor-pointer hover:bg-white/5"
         >
-          <span>تصفح الأعمال</span>
+          <span>{t.exploreBtn}</span>
           <ArrowDown className="w-4 h-4 text-[#ffd700] animate-bounce" />
         </button>
       </div>
@@ -188,34 +198,34 @@ export const Hero: React.FC<HeroProps> = ({
         
         <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <div className="flex items-center gap-1 text-gold font-black text-2xl md:text-3xl mb-1">
-            <span>+5M</span>
+            <span>{t.stats.views}</span>
             <Eye className="w-4 h-4 opacity-75" />
           </div>
-          <span className="text-xs text-gray-400 font-medium">مشاهدات محققة للمحتوى</span>
+          <span className="text-xs text-gray-400 font-medium">{t.stats.viewsLabel}</span>
         </div>
 
         <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <div className="flex items-center gap-1 text-gold font-black text-2xl md:text-3xl mb-1">
-            <span>+150</span>
+            <span>{t.stats.projects}</span>
             <Flame className="w-4 h-4 opacity-75" />
           </div>
-          <span className="text-xs text-gray-400 font-medium">فيديو وغلاف تم إنجازه</span>
+          <span className="text-xs text-gray-400 font-medium">{t.stats.projectsLabel}</span>
         </div>
 
         <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <div className="flex items-center gap-1 text-gold font-black text-2xl md:text-3xl mb-1">
-            <span>48h</span>
+            <span>{t.stats.speed}</span>
             <Clock className="w-4 h-4 opacity-75" />
           </div>
-          <span className="text-xs text-gray-400 font-medium">متوسط سرعة التسليم</span>
+          <span className="text-xs text-gray-400 font-medium">{t.stats.speedLabel}</span>
         </div>
 
         <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
           <div className="flex items-center gap-1 text-gold font-black text-2xl md:text-3xl mb-1">
-            <span>100%</span>
+            <span>{t.stats.satisfaction}</span>
             <CheckCircle2 className="w-4 h-4 opacity-75 text-emerald-400" />
           </div>
-          <span className="text-xs text-gray-400 font-medium">دقة واحترافية بالمواعيد</span>
+          <span className="text-xs text-gray-400 font-medium">{t.stats.satisfactionLabel}</span>
         </div>
 
       </div>

@@ -1,31 +1,38 @@
 import React, { useState } from 'react';
-import { Video, Sparkles, MessageCircle, Menu, X, Phone, Layers, Clock } from 'lucide-react';
+import { Video, Sparkles, MessageCircle, Menu, X, Globe } from 'lucide-react';
 import { ProfileInfo } from '../data/portfolioData';
+import { Language, Translations } from '../data/translations';
 
 interface NavbarProps {
   profile: ProfileInfo;
   activeSection: string;
   onNavigate: (sectionId: string) => void;
   onOpenQuote: () => void;
+  lang: Language;
+  onToggleLang: () => void;
+  t: Translations['nav'];
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   profile,
   activeSection,
   onNavigate,
-  onOpenQuote
+  onOpenQuote,
+  lang,
+  onToggleLang,
+  t,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { id: 'hero', label: 'الرئيسية' },
-    { id: 'thumbnails', label: 'الصور المصغرة' },
-    { id: 'podcasts', label: 'البودكاست' },
-    { id: 'long-videos', label: 'الفيديوهات الطويلة' },
-    { id: 'reels', label: 'الريلز والشورتس' },
-    { id: 'tools', label: 'المهارات والبرامج' },
-    { id: 'workflow', label: 'طريقة العمل' },
-    { id: 'contact', label: 'تواصل معي' },
+    { id: 'hero', label: t.home },
+    { id: 'thumbnails', label: t.thumbnails },
+    { id: 'podcasts', label: t.podcasts },
+    { id: 'long-videos', label: t.longVideos },
+    { id: 'reels', label: t.reels },
+    { id: 'tools', label: t.tools },
+    { id: 'workflow', label: t.workflow },
+    { id: 'contact', label: t.contact },
   ];
 
   const handleLinkClick = (id: string) => {
@@ -33,10 +40,18 @@ export const Navbar: React.FC<NavbarProps> = ({
     setMobileMenuOpen(false);
   };
 
-  const whatsappUrl = `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('السلام عليكم بيشوى، أرغب في الاستفسار عن خدمة مونتاج / تصميم...')}`;
+  const whatsappMessage = lang === 'ar'
+    ? 'السلام عليكم بيشوى، أرغب في الاستفسار عن خدمة مونتاج / تصميم...'
+    : 'Hello Bishoy, I would like to inquire about a video editing / thumbnail project...';
+
+  const cleanPhone = profile.whatsapp.replace(/[^0-9]/g, '');
+  const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+
+  const displayName = lang === 'ar' ? profile.name : profile.nameEn;
+  const displayTitle = lang === 'ar' ? profile.titleEn : 'Video Editor & AI Designer';
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#07160e]/85 backdrop-blur-md border-b border-[#ffd700]/15 transition-all">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#07160e]/90 backdrop-blur-md border-b border-[#ffd700]/15 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -47,20 +62,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className="w-11 h-11 rounded-full overflow-hidden bg-gradient-to-tr from-[#113824] to-[#0b1f15] border border-[#ffd700]/40 flex items-center justify-center glow-gold-sm group-hover:border-[#ffd700] transition-colors shrink-0">
               {profile.avatarUrl ? (
-                <img src={profile.avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
+                <img src={profile.avatarUrl} alt={displayName} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-[#ffd700] font-black text-xl">ب</span>
               )}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl text-white tracking-wide group-hover:text-[#ffd700] transition-colors">
-                  {profile.name}
+                <span className="font-extrabold text-lg sm:text-xl text-white tracking-wide group-hover:text-[#ffd700] transition-colors">
+                  {displayName}
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               </div>
               <span className="text-xs text-[#ffd700]/80 font-medium block">
-                Video Editor & AI Designer
+                {displayTitle}
               </span>
             </div>
           </div>
@@ -73,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => handleLinkClick(link.id)}
-                  className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors cursor-pointer ${
+                  className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors cursor-pointer ${
                     isActive
                       ? 'text-[#ffd700] bg-[#ffd700]/10 border border-[#ffd700]/30'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
@@ -85,40 +100,59 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* Actions */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Actions & Language Switcher */}
+          <div className="hidden sm:flex items-center gap-2.5">
+            {/* Bilingual toggle button */}
+            <button
+              onClick={onToggleLang}
+              className="px-3 py-1.5 text-xs font-bold rounded-lg border border-[#ffd700]/30 hover:border-[#ffd700] bg-white/5 hover:bg-[#ffd700]/10 text-white flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+              title={lang === 'ar' ? 'Switch to English' : 'التحويل للغة العربية'}
+            >
+              <Globe className="w-3.5 h-3.5 text-[#ffd700]" />
+              <span className="font-mono tracking-wider">{lang === 'ar' ? 'English' : 'عربي'}</span>
+            </button>
+
             <button
               onClick={onOpenQuote}
-              className="px-4 py-2 text-xs font-bold text-[#ffd700] border border-[#ffd700]/40 hover:border-[#ffd700] hover:bg-[#ffd700]/10 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-bold text-[#ffd700] border border-[#ffd700]/40 hover:border-[#ffd700] hover:bg-[#ffd700]/10 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>طلب عرض سعر</span>
+              <span>{t.quoteBtn}</span>
             </button>
 
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-xs font-bold bg-[#ffd700] text-[#07160e] hover:bg-[#ffe234] rounded-lg transition-all flex items-center gap-1.5 shadow-md hover:shadow-lg shadow-[#ffd700]/20"
+              className="px-3.5 py-1.5 text-xs font-bold bg-[#ffd700] text-[#07160e] hover:bg-[#ffe234] rounded-lg transition-all flex items-center gap-1.5 shadow-md hover:shadow-lg shadow-[#ffd700]/20"
             >
               <MessageCircle className="w-3.5 h-3.5" />
-              <span>واتساب مباشر</span>
+              <span>{t.whatsappBtn}</span>
             </a>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile Actions: Language + hamburger */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
+              onClick={onToggleLang}
+              className="px-2 py-1 text-[11px] font-bold rounded-lg border border-[#ffd700]/30 bg-white/5 text-white flex items-center gap-1"
+            >
+              <Globe className="w-3 h-3 text-[#ffd700]" />
+              <span>{lang === 'ar' ? 'EN' : 'عربي'}</span>
+            </button>
+
+            <button
               onClick={onOpenQuote}
-              className="px-3 py-1.5 text-xs font-bold text-[#ffd700] border border-[#ffd700]/40 rounded-lg flex items-center gap-1"
+              className="px-2.5 py-1 text-[11px] font-bold text-[#ffd700] border border-[#ffd700]/40 rounded-lg flex items-center gap-1"
             >
               <Sparkles className="w-3 h-3" />
-              <span>عرض سعر</span>
+              <span>{t.quoteBtn}</span>
             </button>
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-gray-300 hover:text-white rounded-lg focus:outline-none"
-              aria-label="القائمة الرئيسية"
+              className="p-1.5 text-gray-300 hover:text-white rounded-lg focus:outline-none"
+              aria-label="القائمة"
             >
               {mobileMenuOpen ? <X className="w-6 h-6 text-[#ffd700]" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -135,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={link.id}
                 onClick={() => handleLinkClick(link.id)}
-                className="w-full text-right px-3 py-2 text-sm font-semibold rounded-lg bg-white/5 hover:bg-[#ffd700]/10 hover:text-[#ffd700] text-gray-200 transition-colors"
+                className="w-full text-start px-3 py-2 text-sm font-semibold rounded-lg bg-white/5 hover:bg-[#ffd700]/10 hover:text-[#ffd700] text-gray-200 transition-colors"
               >
                 {link.label}
               </button>
@@ -150,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-full py-2.5 text-center text-sm font-bold bg-[#ffd700] text-[#07160e] rounded-lg flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>تواصل فوري عبر واتساب</span>
+              <span>{t.whatsappBtn} (01201699362)</span>
             </a>
           </div>
         </div>

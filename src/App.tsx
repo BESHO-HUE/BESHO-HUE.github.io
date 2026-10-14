@@ -20,9 +20,18 @@ import {
   REELS_VIDEOS,
   ThumbnailItem
 } from './data/portfolioData';
-import { Image, Video, Smartphone, Film, Sparkles, Filter } from 'lucide-react';
+import { Language, TRANSLATIONS } from './data/translations';
+import { Image, Video, Smartphone, Film, Sparkles } from 'lucide-react';
 
 export default function App() {
+  const [lang, setLang] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem('bishoy_portfolio_lang') as Language;
+      if (saved === 'ar' || saved === 'en') return saved;
+    } catch (e) {}
+    return 'ar';
+  });
+
   const [profile, setProfile] = useState<ProfileInfo>(() => {
     try {
       const saved = localStorage.getItem('bishoy_portfolio_profile');
@@ -38,6 +47,20 @@ export default function App() {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [filterTab, setFilterTab] = useState<'all' | 'thumbnails' | 'podcasts' | 'long' | 'reels'>('all');
+
+  const t = TRANSLATIONS[lang];
+
+  useEffect(() => {
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+    try {
+      localStorage.setItem('bishoy_portfolio_lang', lang);
+    } catch (e) {}
+  }, [lang]);
+
+  const toggleLanguage = () => {
+    setLang((prev) => (prev === 'ar' ? 'en' : 'ar'));
+  };
 
   const handleSaveProfile = (updated: ProfileInfo) => {
     setProfile(updated);
@@ -72,12 +95,15 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#07160e] text-white flex flex-col selection:bg-[#ffd700] selection:text-[#07160e]">
       
-      {/* Navbar */}
+      {/* Navbar with Language Switcher */}
       <Navbar
         profile={profile}
         activeSection={activeSection}
         onNavigate={scrollToSection}
         onOpenQuote={() => setIsQuoteOpen(true)}
+        lang={lang}
+        onToggleLang={toggleLanguage}
+        t={t.nav}
       />
 
       {/* Hero Section */}
@@ -88,6 +114,8 @@ export default function App() {
           onOpenQuote={() => setIsQuoteOpen(true)}
           onContactClick={() => scrollToSection('contact')}
           onUpdateAvatar={(avatarUrl) => handleSaveProfile({ ...profile, avatarUrl })}
+          lang={lang}
+          t={t.hero}
         />
       </div>
 
@@ -106,7 +134,7 @@ export default function App() {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>جميع الأعمال</span>
+              <span>{t.filter.all}</span>
             </button>
 
             <button
@@ -118,7 +146,7 @@ export default function App() {
               }`}
             >
               <Image className="w-3.5 h-3.5" />
-              <span>الصور المصغرة</span>
+              <span>{t.filter.thumbnails}</span>
             </button>
 
             <button
@@ -130,7 +158,7 @@ export default function App() {
               }`}
             >
               <Video className="w-3.5 h-3.5" />
-              <span>البودكاست</span>
+              <span>{t.filter.podcasts}</span>
             </button>
 
             <button
@@ -142,7 +170,7 @@ export default function App() {
               }`}
             >
               <Film className="w-3.5 h-3.5" />
-              <span>الفيديوهات الطويلة</span>
+              <span>{t.filter.longVideos}</span>
             </button>
 
             <button
@@ -154,27 +182,27 @@ export default function App() {
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
-              <span>الريلز والشورتس</span>
+              <span>{t.filter.reels}</span>
             </button>
           </div>
         </div>
 
-        {/* 1. قسم الصور المصغرة (Thumbnails) */}
+        {/* 1. Thumbnails Section */}
         {(filterTab === 'all' || filterTab === 'thumbnails') && (
           <section id="thumbnails" className="scroll-mt-28">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
               <div>
                 <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
                   <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  الصور المصغرة (Thumbnails)
+                  {t.thumbnailsSection.title}
                 </h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  أغلفة مصممة بسيكولوجية الجذب ورفع نسبة النقر للظهور (CTR) عبر الفوتوشوب والذكاء الاصطناعي
+                  {t.thumbnailsSection.subtitle}
                 </p>
               </div>
 
               <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                4 نماذج مختارة · انقر للتكبير
+                {t.thumbnailsSection.badge}
               </span>
             </div>
 
@@ -190,22 +218,22 @@ export default function App() {
           </section>
         )}
 
-        {/* 2. قسم البودكاست (Podcasts) */}
+        {/* 2. Podcasts Section */}
         {(filterTab === 'all' || filterTab === 'podcasts') && (
           <section id="podcasts" className="scroll-mt-28">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
               <div>
                 <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
                   <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  البودكاست
+                  {t.podcastsSection.title}
                 </h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  مونتاج متعدد الكاميرات، إزالة الفواصل والتردد، هندسة صوتية نقية وإضافة B-Roll توضيحي
+                  {t.podcastsSection.subtitle}
                 </p>
               </div>
 
               <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                حلقات بودكاست كاملة
+                {t.podcastsSection.badge}
               </span>
             </div>
 
@@ -217,22 +245,22 @@ export default function App() {
           </section>
         )}
 
-        {/* 3. قسم الفيديوهات الطويلة (Long-form Videos) */}
+        {/* 3. Long Videos Section */}
         {(filterTab === 'all' || filterTab === 'long') && (
           <section id="long-videos" className="scroll-mt-28">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
               <div>
                 <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
                   <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  الفيديوهات الطويلة
+                  {t.longVideosSection.title}
                 </h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  سرد قصصي عالي الجودة، مونتاج مشوق، خرائط ورسوم توضيحية ومؤثرات صوتية سينمائية
+                  {t.longVideosSection.subtitle}
                 </p>
               </div>
 
               <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                محتوى يوتيوب وثائقي ومعرفي
+                {t.longVideosSection.badge}
               </span>
             </div>
 
@@ -244,22 +272,22 @@ export default function App() {
           </section>
         )}
 
-        {/* 4. قسم الريلز والشورتس (Reels & Shorts) */}
+        {/* 4. Reels & Shorts Section */}
         {(filterTab === 'all' || filterTab === 'reels') && (
           <section id="reels" className="scroll-mt-28">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-2">
               <div>
                 <h3 className="text-3xl md:text-4xl font-black text-white flex items-center gap-3">
                   <span className="w-8 h-1 bg-gold rounded-full"></span>
-                  الريلز والشورتس
+                  {t.reelsSection.title}
                 </h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-2">
-                  تنسيق رأسي 9:16 مصمم للانتشار الفيروسي (Viral)، مع كابشنز ملونة وانتقالات ديناميكية
+                  {t.reelsSection.subtitle}
                 </p>
               </div>
 
               <span className="text-xs text-gold font-bold bg-[#ffd700]/10 px-3 py-1 rounded-full border border-[#ffd700]/25 self-start sm:self-auto">
-                9:16 Vertical Content
+                {t.reelsSection.badge}
               </span>
             </div>
 
@@ -271,16 +299,18 @@ export default function App() {
           </section>
         )}
 
-        {/* 5. قسم البرامج والتقنيات */}
-        <ToolsSection />
+        {/* 5. Software & AI Tools Section */}
+        <ToolsSection lang={lang} t={t.toolsSection} />
 
-        {/* 6. قسم خطة وسير العمل */}
-        <WorkflowSection />
+        {/* 6. Production Workflow Section */}
+        <WorkflowSection lang={lang} t={t.workflowSection} />
 
-        {/* 7. قسم التواصل والطلب */}
+        {/* 7. Contact Section */}
         <ContactSection
           profile={profile}
           onOpenQuote={() => setIsQuoteOpen(true)}
+          lang={lang}
+          t={t.contactSection}
         />
 
       </main>
@@ -290,6 +320,9 @@ export default function App() {
         profile={profile}
         onScrollToTop={scrollToTop}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        lang={lang}
+        t={t.footer}
+        navT={t.nav}
       />
 
       {/* Modals */}
@@ -303,6 +336,8 @@ export default function App() {
         isOpen={isQuoteOpen}
         onClose={() => setIsQuoteOpen(false)}
         profile={profile}
+        lang={lang}
+        t={t.quoteModal}
       />
 
       <ProfileSettingsModal
