@@ -110,10 +110,10 @@ export const Hero: React.FC<HeroProps> = ({
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gold text-[#0b1f15] hover:bg-[#ffe234] font-black py-3.5 px-7 rounded-xl transition-all shadow-lg hover:shadow-[#ffd700]/30 hover:scale-105 flex items-center gap-2 text-sm sm:text-base cursor-pointer"
+                className="bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-3.5 px-7 rounded-xl transition-all duration-300 shadow-xl shadow-[#25D366]/30 hover:shadow-[#25D366]/50 hover:scale-105 active:scale-95 flex items-center gap-2.5 text-sm sm:text-base cursor-pointer border border-white/20"
               >
-                <MessageCircle className="w-5 h-5" />
-                <span>{t.directWhatsApp}</span>
+                <MessageCircle className="w-5 h-5 fill-white text-[#25D366]" />
+                <span>{lang === 'ar' ? 'تواصل معي عبر واتساب' : 'Chat on WhatsApp'}</span>
               </a>
 
               <button

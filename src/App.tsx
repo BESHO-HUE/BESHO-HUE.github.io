@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { SocialProofSection } from './components/SocialProofSection';
 import { ThumbnailCard } from './components/ThumbnailCard';
-import { ThumbnailModal } from './components/ThumbnailModal';
+import { ImageLightbox } from './components/ImageLightbox';
 import { VideoCard } from './components/VideoCard';
 import { ShortsCard } from './components/ShortsCard';
 import { ToolsSection } from './components/ToolsSection';
@@ -58,6 +59,30 @@ export default function App() {
     } catch (e) {}
   }, [lang]);
 
+  // Feature 5: JavaScript Intersection Observer Scroll Animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    const revealElements = document.querySelectorAll('.reveal-section');
+    revealElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [filterTab, lang]);
+
   const toggleLanguage = () => {
     setLang((prev) => (prev === 'ar' ? 'en' : 'ar'));
   };
@@ -95,7 +120,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#07160e] text-white flex flex-col selection:bg-[#ffd700] selection:text-[#07160e]">
       
-      {/* Navbar with Language Switcher */}
+      {/* 1. Sticky Glassmorphism Navbar with Quick Links */}
       <Navbar
         profile={profile}
         activeSection={activeSection}
@@ -106,7 +131,7 @@ export default function App() {
         t={t.nav}
       />
 
-      {/* Hero Section */}
+      {/* Hero Section with WhatsApp button and Split Cinematic Portrait */}
       <div id="hero">
         <Hero
           profile={profile}
@@ -118,6 +143,9 @@ export default function App() {
           t={t.hero}
         />
       </div>
+
+      {/* 3. Social Proof Section: Quick Stats and Featured Client "Eqtesad Plus" */}
+      <SocialProofSection lang={lang} />
 
       {/* Main Portfolio Sections */}
       <main id="portfolio-section" className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-24">
@@ -187,9 +215,9 @@ export default function App() {
           </div>
         </div>
 
-        {/* 1. Thumbnails Section */}
+        {/* 1. Thumbnails Section (with reveal-section scroll animation) */}
         {(filterTab === 'all' || filterTab === 'thumbnails') && (
-          <section id="thumbnails" className="scroll-mt-28">
+          <section id="thumbnails" className="reveal-section scroll-mt-28">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
               <span className="w-8 h-1 bg-gold rounded-full"></span>
               {t.thumbnailsSection.title}
@@ -207,9 +235,9 @@ export default function App() {
           </section>
         )}
 
-        {/* 2. Podcasts Section */}
+        {/* 2. Podcasts Section (with reveal-section scroll animation) */}
         {(filterTab === 'all' || filterTab === 'podcasts') && (
-          <section id="podcasts" className="scroll-mt-28">
+          <section id="podcasts" className="reveal-section scroll-mt-28">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
               <span className="w-8 h-1 bg-gold rounded-full"></span>
               {t.podcastsSection.title}
@@ -223,9 +251,9 @@ export default function App() {
           </section>
         )}
 
-        {/* 3. Long Videos Section */}
+        {/* 3. Long Videos Section (with reveal-section scroll animation) */}
         {(filterTab === 'all' || filterTab === 'long') && (
-          <section id="long-videos" className="scroll-mt-28">
+          <section id="long-videos" className="reveal-section scroll-mt-28">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
               <span className="w-8 h-1 bg-gold rounded-full"></span>
               {t.longVideosSection.title}
@@ -239,9 +267,9 @@ export default function App() {
           </section>
         )}
 
-        {/* 4. Reels & Shorts Section */}
+        {/* 4. Reels & Shorts Section (with reveal-section scroll animation) */}
         {(filterTab === 'all' || filterTab === 'reels') && (
-          <section id="reels" className="scroll-mt-28">
+          <section id="reels" className="reveal-section scroll-mt-28">
             <h3 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3 text-white">
               <span className="w-8 h-1 bg-gold rounded-full"></span>
               {t.reelsSection.title}
@@ -256,18 +284,24 @@ export default function App() {
         )}
 
         {/* 5. Software & AI Tools Section */}
-        <ToolsSection lang={lang} t={t.toolsSection} />
+        <div className="reveal-section">
+          <ToolsSection lang={lang} t={t.toolsSection} />
+        </div>
 
         {/* 6. Production Workflow Section */}
-        <WorkflowSection lang={lang} t={t.workflowSection} />
+        <div className="reveal-section">
+          <WorkflowSection lang={lang} t={t.workflowSection} />
+        </div>
 
         {/* 7. Contact Section */}
-        <ContactSection
-          profile={profile}
-          onOpenQuote={() => setIsQuoteOpen(true)}
-          lang={lang}
-          t={t.contactSection}
-        />
+        <div className="reveal-section">
+          <ContactSection
+            profile={profile}
+            onOpenQuote={() => setIsQuoteOpen(true)}
+            lang={lang}
+            t={t.contactSection}
+          />
+        </div>
 
       </main>
 
@@ -281,13 +315,15 @@ export default function App() {
         navT={t.nav}
       />
 
-      {/* Modals */}
-      <ThumbnailModal
+      {/* 2. Image Lightbox with Vanilla JS Escape & Fullscreen Dark Overlay */}
+      <ImageLightbox
         item={selectedThumbnail}
         onClose={() => setSelectedThumbnail(null)}
         profile={profile}
+        lang={lang}
       />
 
+      {/* Quote Request Modal */}
       <QuoteEstimator
         isOpen={isQuoteOpen}
         onClose={() => setIsQuoteOpen(false)}
@@ -296,6 +332,7 @@ export default function App() {
         t={t.quoteModal}
       />
 
+      {/* Settings Modal */}
       <ProfileSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
